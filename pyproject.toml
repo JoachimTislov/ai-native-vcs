@@ -1,0 +1,19 @@
+[project]
+name = "aivcs"
+version = "0.1.0"
+description = "An AI-native version control system: specs as source of truth, sessions as the atomic unit, contracts as the conflict boundary, tests as the sole arbiter."
+requires-python = ">=3.10"
+dependencies = [
+    "claude-agent-sdk>=0.1",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+aivcs = "aivcs.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["aivcs*"]
