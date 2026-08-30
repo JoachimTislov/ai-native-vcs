@@ -1,6 +1,6 @@
 from pathlib import Path
 
-spec_path = Path(__file__).resolve().parent.parent / "SPEC_LIST.md"
+spec_path = Path(__file__).resolve().parents[3] / "SPEC_LIST.md"
 text = spec_path.read_text(encoding="utf-8")
 
 required_sections = [

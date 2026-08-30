@@ -19,6 +19,15 @@ This repository is spec-first, session-aware, and issue-driven. Keep the impleme
 7. If a bug, design flaw, or drift is identified, capture it in the spec system and issue tracker, not just in a local note.
 8. Every task must be session-scoped, history-aware, and intent-driven.
 
+## Spec and issue policy
+
+- `SPEC_LIST.md` is the repo's canonical tracker for satisfied vs planned work.
+- GitHub issue titles should be written without `Future:` or `Parent:` prefixes; use labels instead.
+- Every issue must be classified with an origin label (`ai` or `human`), a status label from `status:planned`, `status:in-progress`, or `status:done`, and an area label from `area:core`, `area:spec`, `area:docs`, `area:workflow`, or `area:release`.
+- Priority labels (`priority:low`, `priority:medium`, `priority:high`) and type labels (`type:feature`, `type:spec`, `type:research`, `type:task`) are required for triage and sorting.
+- New drift or defects discovered during implementation must be reflected in `SPEC_LIST.md` and linked to an issue when appropriate.
+- Issue metadata must be updated by automation or scripts instead of ad hoc manual labeling.
+
 ## Repo structure
 
 - `SPEC_LIST.md` is the canonical tracker for satisfied vs. planned work.
