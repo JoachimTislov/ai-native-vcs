@@ -42,6 +42,7 @@ See `.agents/agents/agent-manifest.yaml` for the full role architecture and sess
 - New drift or defects discovered during implementation must be reflected in `SPEC_LIST.md` and linked to an issue when appropriate.
 - Issue labels should use standard GitHub labels and the repository taxonomy as needed; avoid repo-specific labels that duplicate standard categories.
 - Issue metadata must be updated by automation or scripts instead of ad hoc manual labeling so the repo remains easy to sort and review.
+- Every pull request must reference the issue or spec it addresses with an explicit link such as `Fixes #123`, `Closes #123`, or `Related to #123` so the review flow does not depend on broad narrative reconstruction.
 
 ## Validation standard
 

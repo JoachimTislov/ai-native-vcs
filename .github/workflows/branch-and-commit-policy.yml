@@ -18,3 +18,6 @@ jobs:
 
       - name: Validate commit message format
         run: python scripts/commit_policy_check.py
+
+      - name: Validate PR issue linkage
+        run: python scripts/pr_issue_link_check.py

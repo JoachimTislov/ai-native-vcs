@@ -2,6 +2,11 @@
 
 Describe the change and the intent behind it.
 
+## Linked issues
+
+- Fixes #<issue>
+- Related to #<issue>
+
 ## Scope
 
 - Domain:
