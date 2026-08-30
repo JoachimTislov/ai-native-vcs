@@ -33,6 +33,7 @@ This document tracks the design and implementation status for the AI-native VCS 
 - Future: #3 — Why per-session history instead of git diff/blame.
 - Future: #4 — Why deterministic tests are the review authority.
 - Future: #6 — Package AIVCS as an npm distribution layer to simplify install and plugin integration.
+- Future: #13 — Research plugin compatibility across major AI CLI tools.
 
 ## Drift / defect policy
 
