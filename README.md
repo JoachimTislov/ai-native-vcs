@@ -39,6 +39,74 @@ this tool should be routed *through* `aivcs session run` itself.
 - Drift detection (implementation vs. what regenerating from spec would
   produce).
 
+## Agentic development model
+
+This repository follows an agentic workflow aligned with the repo's
+`AGENTS.md` conventions:
+
+- `SPEC_LIST.md` remains the canonical project-tracker for satisfied vs.
+  planned work.
+- architecture questions are meant to become future issues, not hidden local
+  decisions.
+- bugs, drift, and bad design decisions must flow back into the spec and the
+  issue tracker so the system can self-correct.
+- GitHub Actions enforces the minimal automation required to keep the repo
+  coherent: tests and spec-progress validation run on push/PR.
+
+## Specialized agent roles
+
+The project is designed to evolve around a small mesh of specialized agents,
+with each one responsible for a distinct part of the workflow.
+
+## Abstracted Git API
+
+The repo deliberately hides the raw Git command model behind an intent-first,
+session-first interface. See `docs/abstracted-git-api.md` for the conceptual
+mapping.
+
+In effect:
+
+- `repo health` replaces `git status`
+- `session start` replaces repo/bootstrap concerns
+- `session stage` replaces `git add`
+- `session finalize` replaces `git commit`
+- `history view` replaces `git log`
+- `history diff` replaces `git diff`
+- `debug trace` replaces `git blame`
+- `publish` replaces `git push`
+- `release` replaces Git tagging/release semantics
+
+This keeps Git as the durable engine while making the user-facing model a
+session/spec workflow instead of raw version control commands.
+
+- `Spec Steward` — owns spec and issue traceability.
+- `Session Historian` — tracks session lineage and intent history.
+- `Intent Diagnostician` — reconstructs what a session was trying to achieve.
+- `Contract Guardian` — enforces domain and contract boundaries.
+- `Test Oracle` — runs deterministic validation and bisects regressions.
+- `Drift Auditor` — compares implementation to spec and detects drift.
+- `Review Synthesizer` — turns session history into a review artifact.
+- `Git Backend Steward` — owns Git snapshot semantics and replay.
+- `Workflow Automation Agent` — maintains CI and issue/spec hygiene.
+- `Abstraction Evaluator` — reviews whether the architecture still matches the
+  project's goals and design principles.
+
+The `Abstraction Evaluator` is the design-focused specialist that checks the
+boundary between Git as substrate and the AI-native session/spec model as the
+user-facing system. See `docs/abstraction-evaluator.md` for details.
+
+## Python suitability at scale
+
+Python is a good fit for the current phase because this project is about
+prototyping AI orchestration, spec-driven development, and review automation.
+It is not the strongest long-term core language for a high-scale VCS engine,
+where Rust, Go, or JVM-native code may offer better concurrency, memory
+safety, and throughput. The recommendation is to keep Python at the AI and
+workflow layer while moving the hot-path storage/indexing engine to a lower-
+level runtime when scale demands it.
+
+See `docs/python-at-scale.md` for the design write-up.
+
 ## Quickstart
 
 ```bash
@@ -64,8 +132,12 @@ aivcs agent add-compounded checkout-impl \
     --surface "POST /checkout,CheckoutService.charge"
 
 # 4. Run a session
+# Either pass a prompt directly or pipe it in via stdin / interactive input
+# Example:
 aivcs session run --agent checkout-impl --spec checkout \
     --prompt "Implement the charge endpoint per the spec."
+# or:
+printf '%s\n' "Implement the charge endpoint per the spec." | aivcs session run --agent checkout-impl --spec checkout
 
 # 5. Inspect history, not diffs
 aivcs log src/checkout/charge.py
