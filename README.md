@@ -1,15 +1,27 @@
-# aivcs — Phase 1 scaffold
+# aivcs — AI-native version control prototype
 
-An AI-native version control system, built from `Core_Specifications`:
-specs are the source of truth, sessions (not commits) are the atomic unit
-of history, conflicts are checked at the contract level, and a deterministic
-test suite — not human review — is the arbiter of correctness.
+An AI-native version control system built around a simple principle:
+intent, session history, and tests drive the workflow; Git remains the
+storage and transport substrate.
 
-This is the **Phase 1** bootstrap: enough working plumbing to run real
-sessions, track their history per file, generate review artifacts, and
-bisect regressions. It was built with ordinary development because the
-system can't build itself before it exists. From here on, further work on
-this tool should be routed *through* `aivcs session run` itself.
+The project treats specs as the source of truth, sessions as the atomic unit
+of history, contracts as the domain boundary, and deterministic tests as the
+review authority. It is designed to be provider-neutral at the workflow level,
+so the same logic can adapt to Claude, Copilot, OpenAI, or future providers
+without changing the underlying session model.
+
+This repository now includes the agent framework, issue templates, release
+workflow, and open-source repo standards that make the project usable as a
+real engineering project rather than a one-off prototype.
+
+## Current status
+
+- Version: 0.2.0
+- Session-first workflow: implemented
+- Provider-agnostic agent flow: implemented via manifests
+- GitHub issue and spec policy: implemented
+- CI and release automation: implemented
+- Python prototype retained for orchestration and experimentation
 
 ## What's implemented
 
@@ -41,15 +53,13 @@ this tool should be routed *through* `aivcs session run` itself.
 
 ## Agentic development model
 
-This repository follows an agentic workflow aligned with the repo's
-`AGENTS.md` conventions:
+This repository follows an agentic workflow aligned with `AGENTS.md`:
 
-- `SPEC_LIST.md` remains the canonical project-tracker for satisfied vs.
-  planned work.
-- architecture questions are meant to become future issues, not hidden local
+- `SPEC_LIST.md` remains the canonical tracker for satisfied vs. planned work.
+- design questions are tracked through issues and labels, not as hidden local
   decisions.
-- bugs, drift, and bad design decisions must flow back into the spec and the
-  issue tracker so the system can self-correct.
+- bugs, drift, and bad design decisions flow back into the spec and issue
+  tracker so the system can self-correct.
 - GitHub Actions enforces the minimal automation required to keep the repo
   coherent: tests and spec-progress validation run on push/PR.
 
@@ -57,6 +67,20 @@ This repository follows an agentic workflow aligned with the repo's
 
 The project is designed to evolve around a small mesh of specialized agents,
 with each one responsible for a distinct part of the workflow.
+
+- `Spec Steward` — owns spec and issue traceability.
+- `Session Historian` — tracks session lineage and intent history.
+- `Intent Diagnostician` — reconstructs what a session was trying to achieve.
+- `Contract Guardian` — enforces domain and contract boundaries.
+- `Test Oracle` — runs deterministic validation and bisects regressions.
+- `Drift Auditor` — compares implementation to spec and detects drift.
+- `Review Synthesizer` — turns session history into a review artifact.
+- `Git Backend Steward` — owns Git snapshot semantics and replay.
+- `Workflow Automation Agent` — maintains CI and issue/spec hygiene.
+- `Abstraction Evaluator` — reviews whether the architecture still matches the
+  project's goals and design principles.
+
+The role definitions are stored in `manifests/agent-manifest.yaml`.
 
 ## Abstracted Git API
 
@@ -78,18 +102,6 @@ In effect:
 
 This keeps Git as the durable engine while making the user-facing model a
 session/spec workflow instead of raw version control commands.
-
-- `Spec Steward` — owns spec and issue traceability.
-- `Session Historian` — tracks session lineage and intent history.
-- `Intent Diagnostician` — reconstructs what a session was trying to achieve.
-- `Contract Guardian` — enforces domain and contract boundaries.
-- `Test Oracle` — runs deterministic validation and bisects regressions.
-- `Drift Auditor` — compares implementation to spec and detects drift.
-- `Review Synthesizer` — turns session history into a review artifact.
-- `Git Backend Steward` — owns Git snapshot semantics and replay.
-- `Workflow Automation Agent` — maintains CI and issue/spec hygiene.
-- `Abstraction Evaluator` — reviews whether the architecture still matches the
-  project's goals and design principles.
 
 The `Abstraction Evaluator` is the design-focused specialist that checks the
 boundary between Git as substrate and the AI-native session/spec model as the
@@ -136,44 +148,48 @@ The release automation is in `.github/workflows/release.yml` and
 ## Quickstart
 
 ```bash
-pip install -e .              # needs claude-agent-sdk + an ANTHROPIC_API_KEY to run live sessions
+# Install the project and its CLI
+pip install -e .
 
-aivcs init                    # in an empty/existing project directory
+# Create a local aivcs repo
+mkdir -p demo && cd demo
+aivcs init
 
-# 1. Write a spec
-aivcs spec new checkout ./checkout-spec.md
-aivcs spec show checkout
-
-# 2. Define a primitive agent (base instructions + default toolset)
-cat > prompt.txt <<'EOF'
-You are a careful backend engineer. Make the minimal change that satisfies
-the spec. Never touch files outside your assigned domain.
+# 1) Write a simple spec
+cat > feature-spec.md <<'EOF'
+# Feature spec
+Implement the requested change in the target domain with the smallest possible edit.
 EOF
-aivcs agent add-primitive backend-engineer --system-prompt-file prompt.txt
+aivcs spec new feature ./feature-spec.md
+aivcs spec show feature
 
-# 3. Compound it to a domain + contract
-aivcs agent add-compounded checkout-impl \
-    --primitive backend-engineer \
-    --domain src/checkout \
-    --surface "POST /checkout,CheckoutService.charge"
+# 2) Define a primitive agent
+cat > agent-prompt.txt <<'EOF'
+You are a careful engineer. Keep the change minimal, focused, and testable.
+EOF
+aivcs agent add-primitive engineer --system-prompt-file agent-prompt.txt
 
-# 4. Run a session
-# Either pass a prompt directly or pipe it in via stdin / interactive input
-# Example:
-aivcs session run --agent checkout-impl --spec checkout \
-    --prompt "Implement the charge endpoint per the spec."
-# or:
-printf '%s\n' "Implement the charge endpoint per the spec." | aivcs session run --agent checkout-impl --spec checkout
+# 3) Bind the agent to a domain
+# The repo uses aivcs as the user-facing workflow; Git remains the storage backend.
+aivcs agent add-compounded feature-impl   --primitive engineer   --domain src/feature   --surface "feature API"
 
-# 5. Inspect history, not diffs
-aivcs log src/checkout/charge.py
+# 4) Run a session
+# Pass the prompt directly or pipe it in via stdin.
+aivcs session run --agent feature-impl --spec feature   --prompt "Implement the change described in the spec."
 
-# 6. Generate the review artifact for a session
+# 5) Inspect session history through aivcs
+# (not raw git log or git diff)
+aivcs log src/feature
+
+# 6) Review the latest session
+# Replace <session_id> with the ID printed by the previous command.
 aivcs review <session_id>
 
-# 7. When something breaks, bisect instead of git blame
-aivcs bisect src/checkout/charge.py --test "pytest tests/test_checkout.py -q"
+# 7) If the test suite regresses, bisect by session history
+aivcs bisect src/feature --test "pytest -q"
 ```
+
+This project keeps Git under the hood, but the user-facing workflow is the `aivcs` CLI: initialize, define specs, run sessions, inspect history, review output, and bisect regressions without exposing raw Git commands.
 
 ## Tests
 
