@@ -61,8 +61,8 @@ with each one responsible for a distinct part of the workflow.
 ## Abstracted Git API
 
 The repo deliberately hides the raw Git command model behind an intent-first,
-session-first interface. See `docs/abstracted-git-api.md` for the conceptual
-mapping.
+session-first interface. The conceptual mapping is captured in the repository
+manifests and automation scripts rather than in a dedicated docs directory.
 
 In effect:
 
@@ -93,7 +93,20 @@ session/spec workflow instead of raw version control commands.
 
 The `Abstraction Evaluator` is the design-focused specialist that checks the
 boundary between Git as substrate and the AI-native session/spec model as the
-user-facing system. See `docs/abstraction-evaluator.md` for details.
+user-facing system. The role is defined in `manifests/agent-manifest.yaml`.
+
+## Provider-agnostic execution model
+
+The runtime should be provider-neutral. The repo abstracts the AI backend so
+that the same session flow can work with Claude, Copilot, OpenAI, or future
+providers.
+
+A concrete provider may support resume semantics such as `--resume`, but the
+core system treats resume as an optimization rather than a source of truth.
+The session remains the canonical object regardless of which provider produced
+it.
+
+The provider-neutral execution model is captured in `manifests/provider-agnostic-flow.yaml`.
 
 ## Python suitability at scale
 
@@ -105,7 +118,20 @@ safety, and throughput. The recommendation is to keep Python at the AI and
 workflow layer while moving the hot-path storage/indexing engine to a lower-
 level runtime when scale demands it.
 
-See `docs/python-at-scale.md` for the design write-up.
+The language tradeoff is captured in `manifests/python-at-scale.yaml`.
+
+## Release flow and semantic versioning
+
+This repository follows semantic versioning for releases: `MAJOR.MINOR.PATCH`.
+The release workflow is intentionally conservative:
+
+- only a validated, tested branch can be released
+- the project version is incremented in `pyproject.toml`
+- a release tag is created in the repo
+- the tag is pushed together with the release commit
+
+The release automation is in `.github/workflows/release.yml` and
+`scripts/release.sh`.
 
 ## Quickstart
 

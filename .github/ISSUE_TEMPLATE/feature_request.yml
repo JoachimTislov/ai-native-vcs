@@ -1,0 +1,32 @@
+name: Feature request
+description: Suggest an enhancement or new capability.
+labels: [enhancement, ai-vcs]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggest a capability that would improve the AI-native VCS experience.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      placeholder: What user or workflow gap are you addressing?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      placeholder: Describe the solution, tradeoffs, and expected outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      placeholder: Describe other approaches you considered.
+  - type: textarea
+    id: spec-link
+    attributes:
+      label: Spec or issue connection
+      placeholder: Link any relevant spec or issue context.

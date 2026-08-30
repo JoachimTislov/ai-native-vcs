@@ -28,13 +28,14 @@ The repository follows a session-centric development model rather than a raw pat
 - History is tracked through sessions, not only through Git diff or blame.
 - Diagnosis begins with the original intent, then moves to the failing implementation.
 
-See `docs/agent-roles.md` for the full role architecture and session metadata schema.
+See `manifests/agent-manifest.yaml` for the full role architecture and session metadata schema.
 
 ## Spec and issue policy
 
 - `SPEC_LIST.md` is the repo's canonical tracker for satisfied vs planned work.
 - Parent and future design questions are tracked as issues, not as current implementation instructions.
 - GitHub issue titles should be written without `Future:` or `Parent:` prefixes; use labels instead.
+- Standard GitHub issue forms are preferred over plain markdown issue bodies when structured reporting is useful.
 - New drift or defects discovered during implementation must be reflected in `SPEC_LIST.md` and linked to an issue when appropriate.
 - Issue labels should follow the project conventions: `architecture`, `design`, `ai-vcs`, `spec`, and `release` as needed.
 

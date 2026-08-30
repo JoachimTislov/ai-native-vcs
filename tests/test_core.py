@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from aivcs.cli import _read_prompt
 from aivcs.store import Store
 from aivcs.index import SessionIndex
 from aivcs.spec import SpecStore
@@ -36,6 +37,12 @@ def _fake_session(root: Path, store: Store, idx: SessionIndex, files: dict, msg:
     )
     (sessions_dir / f"{sid}.json").write_text(json.dumps(rec.to_dict()))
     return sid
+
+
+def test_read_prompt_accepts_explicit_value():
+    class Args:
+        prompt = "explicit"
+    assert _read_prompt(Args()) == "explicit"
 
 
 def test_store_init_creates_root_commit(repo):

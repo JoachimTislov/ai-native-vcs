@@ -1,0 +1,42 @@
+name: Architecture decision
+description: Propose or review a system boundary or architectural tradeoff.
+title: ""
+labels: [architecture, design, ai-vcs]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping shape the AI-native VCS architecture.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Describe the architectural tradeoff or unresolved design question.
+      placeholder: Explain the current design challenge and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Options considered
+      description: List the main approaches or constraints you considered.
+      placeholder: |
+        - Option A
+        - Option B
+        - Option C
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Expected outcome
+      description: What should the eventual design decision or spec say?
+      placeholder: Describe the desired end state and tradeoff decision.
+    validations:
+      required: true
+  - type: checkboxes
+    id: spec-impact
+    attributes:
+      label: Spec impact
+      options:
+        - label: This affects the repo specification list.

@@ -1,0 +1,41 @@
+name: Spec drift or defect
+description: Report drift, defects, or mismatches between design intent and implementation.
+title: ""
+labels: [spec, ai-vcs]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for bugs, design drift, or mismatches between the intended behavior and actual implementation.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Drift summary
+      description: Describe the mismatch or bug.
+      placeholder: What is wrong, and what was expected instead?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Provide reproduction steps, failing tests, or observed behavior.
+      placeholder: Include tests, outputs, or a clear reproduction path.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Explain the practical or design impact.
+      placeholder: Who or what is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: corrective-action
+    attributes:
+      label: Corrective action
+      description: Explain how this should be reflected in the codebase or spec tracker.
+      placeholder: Note the needed fix or spec update.
+    validations:
+      required: true

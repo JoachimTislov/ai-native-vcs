@@ -1,6 +1,6 @@
 [project]
 name = "aivcs"
-version = "0.1.0"
+version = "0.2.0"
 description = "An AI-native version control system: specs as source of truth, sessions as the atomic unit, contracts as the conflict boundary, tests as the sole arbiter."
 requires-python = ">=3.10"
 dependencies = [
