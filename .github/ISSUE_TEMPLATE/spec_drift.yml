@@ -1,7 +1,7 @@
 name: Spec drift or defect
 description: Report drift, defects, or mismatches between design intent and implementation.
 title: ""
-labels: [spec, ai-vcs]
+labels: [bug, enhancement]
 body:
   - type: markdown
     attributes:

@@ -16,12 +16,14 @@ real engineering project rather than a one-off prototype.
 
 ## Current status
 
-- Version: 0.2.0
+- Version: 0.0.1
 - Session-first workflow: implemented
 - Provider-agnostic agent flow: implemented via manifests
 - GitHub issue and spec policy: implemented
 - CI and release automation: implemented
 - Python prototype retained for orchestration and experimentation
+- Repository metadata and agent assets live under `.agents/`
+- Canonical repo instructions are defined in `AGENTS.md` and surfaced via `.github/copilot-instructions.md`
 
 ## What's implemented
 
@@ -53,15 +55,15 @@ real engineering project rather than a one-off prototype.
 
 ## Agentic development model
 
-This repository follows an agentic workflow aligned with `AGENTS.md`:
+This repository follows an agentic workflow aligned with `AGENTS.md` and the repo-local agent metadata under `.agents/`:
 
 - `SPEC_LIST.md` remains the canonical tracker for satisfied vs. planned work.
-- design questions are tracked through issues and labels, not as hidden local
-  decisions.
-- bugs, drift, and bad design decisions flow back into the spec and issue
-  tracker so the system can self-correct.
-- GitHub Actions enforces the minimal automation required to keep the repo
-  coherent: tests and spec-progress validation run on push/PR.
+- `AGENTS.md` is the single source of truth for repo policy and enforcement.
+- `.agents/agents/*.yaml` stores the machine-readable role catalog and repo metadata.
+- `.agents/skills/*.md` provides repo-local reusable skill handoff guidance.
+- design questions are tracked through issues and labels, not as hidden local decisions.
+- bugs, drift, and bad design decisions flow back into the spec and issue tracker so the system can self-correct.
+- GitHub Actions enforces the minimal automation required to keep the repo coherent: tests and spec-progress validation run on push/PR.
 
 ## Specialized agent roles
 
@@ -80,7 +82,7 @@ with each one responsible for a distinct part of the workflow.
 - `Abstraction Evaluator` — reviews whether the architecture still matches the
   project's goals and design principles.
 
-The role definitions are stored in `manifests/agent-manifest.yaml`.
+The role definitions are stored in `.agents/agents/agent-manifest.yaml`, and the repo-local skill deck lives under `.agents/skills/`.
 
 ## Abstracted Git API
 
@@ -105,7 +107,7 @@ session/spec workflow instead of raw version control commands.
 
 The `Abstraction Evaluator` is the design-focused specialist that checks the
 boundary between Git as substrate and the AI-native session/spec model as the
-user-facing system. The role is defined in `manifests/agent-manifest.yaml`.
+user-facing system. The role is defined in `.agents/agents/agent-manifest.yaml`.
 
 ## Provider-agnostic execution model
 
@@ -118,7 +120,7 @@ core system treats resume as an optimization rather than a source of truth.
 The session remains the canonical object regardless of which provider produced
 it.
 
-The provider-neutral execution model is captured in `manifests/provider-agnostic-flow.yaml`.
+The provider-neutral execution model is captured in `.agents/agents/provider-agnostic-flow.yaml`.
 
 ## Python suitability at scale
 
@@ -130,7 +132,7 @@ safety, and throughput. The recommendation is to keep Python at the AI and
 workflow layer while moving the hot-path storage/indexing engine to a lower-
 level runtime when scale demands it.
 
-The language tradeoff is captured in `manifests/python-at-scale.yaml`.
+The language tradeoff is captured in `.agents/agents/python-at-scale.yaml`.
 
 ## Release flow and semantic versioning
 
@@ -141,9 +143,12 @@ The release workflow is intentionally conservative:
 - the project version is incremented in `pyproject.toml`
 - a release tag is created in the repo
 - the tag is pushed together with the release commit
+- the GitHub release includes generated binaries for the supported platforms
 
 The release automation is in `.github/workflows/release.yml` and
 `scripts/release.sh`.
+
+This repo is also distributed under the MIT License; see `LICENSE`.
 
 ## Quickstart
 

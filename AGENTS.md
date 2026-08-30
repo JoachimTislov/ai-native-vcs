@@ -36,9 +36,9 @@ See `.agents/agents/agent-manifest.yaml` for the full role architecture and sess
 - Parent and future design questions are tracked as issues, not as current implementation instructions.
 - GitHub issue titles should be written without `Future:` or `Parent:` prefixes; use labels instead.
 - Standard GitHub issue forms are preferred over plain markdown issue bodies when structured reporting is useful.
-- All issues must be classified deterministically by automation: `ai-generated` for AI-originated work and `human-generated` for human-originated work.
+- All issues must be classified deterministically by automation: `ai` for AI-originated work and `human` for human-originated work.
 - New drift or defects discovered during implementation must be reflected in `SPEC_LIST.md` and linked to an issue when appropriate.
-- Issue labels should follow the project conventions: `architecture`, `design`, `ai-vcs`, `spec`, `release`, `ai-generated`, and `human-generated` as needed.
+- Issue labels should use standard GitHub labels and the minimal origin labels as needed; avoid repo-specific labels that duplicate standard categories.
 
 ## Validation standard
 

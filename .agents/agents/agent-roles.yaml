@@ -1,0 +1,14 @@
+version: 1
+project: ai-native-vcs
+summary: Session-scoped, intent-aware agents used to reason over design, history, and validation.
+roles:
+  - Spec Steward
+  - Session Historian
+  - Intent Diagnostician
+  - Contract Guardian
+  - Test Oracle
+  - Drift Auditor
+  - Review Synthesizer
+  - Git Backend Steward
+  - Workflow Automation Agent
+  - Abstraction Evaluator

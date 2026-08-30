@@ -1,7 +1,7 @@
 name: Architecture decision
 description: Propose or review a system boundary or architectural tradeoff.
 title: ""
-labels: [architecture, design, ai-vcs]
+labels: [enhancement, bug]
 body:
   - type: markdown
     attributes:

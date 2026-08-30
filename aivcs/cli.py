@@ -19,15 +19,17 @@ import asyncio
 import json
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-from .agents import AgentStore, CompoundedAgentSpec, PrimitiveAgentSpec
-from .bisect import bisect_path
-from .index import SessionIndex
-from .models import Contract
-from .review import render as render_review
-from .session import SessionRunner
-from .spec import SpecStore
-from .store import Store
+if TYPE_CHECKING:
+    from .agents import AgentStore, CompoundedAgentSpec, PrimitiveAgentSpec
+    from .bisect import bisect_path
+    from .index import SessionIndex
+    from .models import Contract
+    from .review import render as render_review
+    from .session import SessionRunner
+    from .spec import SpecStore
+    from .store import Store
 
 
 def _root() -> Path:
@@ -35,6 +37,8 @@ def _root() -> Path:
 
 
 def cmd_init(args):
+    from .store import Store
+
     store = Store(_root())
     store.init()
     (_root() / ".aivcs").mkdir(exist_ok=True)
@@ -42,6 +46,8 @@ def cmd_init(args):
 
 
 def cmd_spec_new(args):
+    from .spec import SpecStore
+
     specs = SpecStore(_root())
     content = Path(args.file).read_text()
     v = specs.new_version(args.name, content)
@@ -49,11 +55,15 @@ def cmd_spec_new(args):
 
 
 def cmd_spec_show(args):
+    from .spec import SpecStore
+
     specs = SpecStore(_root())
     print(specs.get(args.name, args.version))
 
 
 def cmd_agent_add_primitive(args):
+    from .agents import AgentStore, PrimitiveAgentSpec
+
     store = AgentStore(_root())
     prompt = Path(args.system_prompt_file).read_text()
     tools = args.tools.split(",") if args.tools else None
@@ -68,6 +78,9 @@ def cmd_agent_add_primitive(args):
 
 
 def cmd_agent_add_compounded(args):
+    from .agents import AgentStore, CompoundedAgentSpec
+    from .models import Contract
+
     store = AgentStore(_root())
     surface = args.surface.split(",") if args.surface else []
     spec = CompoundedAgentSpec(
@@ -80,21 +93,45 @@ def cmd_agent_add_compounded(args):
     print(f"wrote {path}")
 
 
+def _read_prompt(args) -> str:
+    if args.prompt is not None:
+        return args.prompt
+
+    if not sys.stdin.isatty():
+        data = sys.stdin.read().strip()
+        if data:
+            return data
+
+    prompt = input("Enter session prompt: ")
+    if not prompt.strip():
+        raise ValueError("session prompt cannot be empty")
+    return prompt
+
+
 def cmd_session_run(args):
+    from .session import SessionRunner
+
     runner = SessionRunner(_root())
+    prompt = _read_prompt(args)
     record = asyncio.run(
-        runner.run(agent_name=args.agent, prompt=args.prompt, spec_name=args.spec)
+        runner.run(agent_name=args.agent, prompt=prompt, spec_name=args.spec)
     )
     print(json.dumps(record.to_dict(), indent=2))
 
 
 def cmd_log(args):
+    from .index import SessionIndex
+
     idx = SessionIndex(_root() / ".aivcs" / "index.json")
     for sid in idx.history(args.path):
         print(sid)
 
 
 def cmd_review(args):
+    from .review import render as render_review
+    from .session import SessionRunner
+    from .spec import SpecStore
+
     runner = SessionRunner(_root())
     specs = SpecStore(_root())
     record = runner.load_record(args.session_id)
@@ -110,6 +147,8 @@ def cmd_review(args):
 def cmd_check(args):
     import subprocess
 
+    from .session import SessionRunner
+
     runner = SessionRunner(_root())
     record = runner.load_record(args.session_id)
     result = subprocess.run(args.test, shell=True, cwd=_root(), capture_output=True, text=True)
@@ -122,6 +161,8 @@ def cmd_check(args):
 
 
 def cmd_bisect(args):
+    from .bisect import bisect_path
+
     result = bisect_path(_root(), args.path, args.test)
     print(f"checked {len(result.checked)} session(s): {result.checked}")
     if result.first_bad_session:
@@ -166,7 +207,7 @@ def main(argv=None):
     sesub = se.add_subparsers(dest="session_cmd", required=True)
     se1 = sesub.add_parser("run")
     se1.add_argument("--agent", required=True)
-    se1.add_argument("--prompt", required=True)
+    se1.add_argument("--prompt", default=None)
     se1.add_argument("--spec", default=None)
     se1.set_defaults(func=cmd_session_run)
 

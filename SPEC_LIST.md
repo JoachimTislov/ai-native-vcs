@@ -24,6 +24,7 @@ This document tracks the design and implementation status for the AI-native VCS 
 - [ ] Decide whether Python is the long-term core language or just the agent/orchestration layer.
 - [ ] Evaluate Go as the long-term core VCS runtime while preserving the Python prototype for agent orchestration and experimentation.
 - [ ] Define a robust, open-standard agent workflow spanning issue tracking, specs, and automation.
+- [ ] Package AIVCS as an npm distribution layer or plugin wrapper to simplify install and reduce platform-binary friction.
 
 ## Related future issues
 
@@ -31,6 +32,7 @@ This document tracks the design and implementation status for the AI-native VCS 
 - Future: #2 — Why wrap Git instead of implementing a separate VCS.
 - Future: #3 — Why per-session history instead of git diff/blame.
 - Future: #4 — Why deterministic tests are the review authority.
+- Future: #6 — Package AIVCS as an npm distribution layer to simplify install and plugin integration.
 
 ## Drift / defect policy
 

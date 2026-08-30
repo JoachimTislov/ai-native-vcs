@@ -1,0 +1,9 @@
+version: 1
+project: ai-native-vcs
+name: abstraction-evaluator
+purpose: Review whether the architecture still matches the repository's intent and abstraction boundary.
+questions:
+  - Is Git being used as a storage substrate rather than the user-facing model?
+  - Are sessions still the canonical unit of history?
+  - Is the design preserving intent across parent sessions?
+  - Does the architecture remain understandable without raw git diff archaeology?

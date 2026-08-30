@@ -1,0 +1,20 @@
+name: Branch and commit policy
+
+on:
+  pull_request:
+  push:
+    branches: ['**']
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate branch naming
+        run: python scripts/branch_policy_check.py
+
+      - name: Validate commit message format
+        run: python scripts/commit_policy_check.py

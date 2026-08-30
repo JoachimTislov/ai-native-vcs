@@ -1,0 +1,14 @@
+version: 1
+project: ai-native-vcs
+name: abstracted-git-api
+summary: Git is the storage substrate; the user model is session-aware and intent-driven.
+interface:
+  repo-health: replaces git status
+  session-start: begins a task session with explicit intent and scope
+  session-stage: records session state without requiring raw git add semantics
+  session-finalize: finalizes a validated session and child commit set
+  history-view: inspects session lineage instead of raw git log
+  history-diff: summarizes session delta by intent and validation
+  debug-trace: explains regressions using session metadata and parent lineage
+  publish: transports validated state to a remote backend
+  release: creates a semver release from validated session provenance
