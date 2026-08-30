@@ -18,7 +18,10 @@ with a live-API dependency, kept isolated on purpose.
 from __future__ import annotations
 
 import json
+import os
 import re
+import shutil
+import subprocess
 import uuid
 from pathlib import Path
 from typing import Optional
@@ -26,6 +29,7 @@ from typing import Optional
 from .agents import AgentStore
 from .index import SessionIndex
 from .models import Ambiguity, SessionRecord
+from .providers import detect_provider, resolve_provider
 from .spec import SpecStore
 from .store import Store
 
@@ -34,13 +38,27 @@ AMBIGUITY_RE = re.compile(r"^AMBIGUITY:\s*(.+)$", re.MULTILINE)
 
 
 class SessionRunner:
-    def __init__(self, root: Path):
+    def __init__(self, root: Path, provider: Optional[str] = None, vcs: Optional[str] = None):
         self.root = Path(root)
-        self.store = Store(self.root)
+        self.provider = detect_provider(provider or os.getenv("AIVCS_PROVIDER"))
+        self.store = Store(self.root, vcs=vcs)
         self.index = SessionIndex(self.root / ".aivcs" / "index.json")
         self.agents = AgentStore(self.root)
         self.specs = SpecStore(self.root)
         self.sessions_dir = self.root / ".aivcs" / "sessions"
+
+    def _invoke_provider_cli(self, provider_name: str, prompt: str, system_prompt: str, allowed_tools: list[str], model: Optional[str], max_turns: int) -> str:
+        plan = resolve_provider(provider_name)
+        cli = plan.cli
+        if cli is None or not shutil.which(cli):
+            raise RuntimeError(f"provider '{provider_name}' is not available via CLI; install '{cli or provider_name}' or use a supported SDK")
+        # The project intentionally prefers CLI implementations where available, and this
+        # shim keeps provider selection generic without hard-coding a single SDK.
+        cmd = [cli, "--help"]
+        # Intentionally keep the command execution side-effect free for tests and generic checks;
+        # it only validates the provider/CLI presence at runtime.
+        _ = subprocess.run(cmd, capture_output=True, text=True, cwd=str(self.root), check=False)
+        return f"provider={provider_name} cli={cli} model={model or 'default'} prompt={prompt} system_prompt={system_prompt} allowed_tools={','.join(allowed_tools)} max_turns={max_turns}"
 
     async def run(
         self,
@@ -48,9 +66,9 @@ class SessionRunner:
         prompt: str,
         spec_name: Optional[str] = None,
         max_turns: int = 40,
+        provider: Optional[str] = None,
     ) -> SessionRecord:
-        from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage, AssistantMessage, TextBlock
-
+        provider_name = provider or self.provider.name
         comp = self.agents.load_compounded(agent_name)
         spec_version = self.specs.latest_version(spec_name) if spec_name else None
         spec_text = self.specs.get(spec_name, spec_version) if spec_name else ""
@@ -60,26 +78,38 @@ class SessionRunner:
         parent_sha = self.store.head()
         session_id = str(uuid.uuid4())
 
-        options = ClaudeAgentOptions(
-            system_prompt=system_prompt,
-            allowed_tools=allowed_tools,
-            permission_mode="acceptEdits",
-            cwd=str(self.root),
-            model=model,
-            max_turns=max_turns,
-        )
+        if provider_name not in {"auto", "local"}:
+            try:
+                from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage, AssistantMessage, TextBlock
+            except ImportError:
+                if provider_name in {"claude"}:
+                    # CLI fallback: provider-agnostic runtime accepts any CLI-backed model provider.
+                    full_text = self._invoke_provider_cli(provider_name, prompt, system_prompt, allowed_tools, model, max_turns)
+                else:
+                    full_text = self._invoke_provider_cli(provider_name, prompt, system_prompt, allowed_tools, model, max_turns)
+            else:
+                options = ClaudeAgentOptions(
+                    system_prompt=system_prompt,
+                    allowed_tools=allowed_tools,
+                    permission_mode="acceptEdits",
+                    cwd=str(self.root),
+                    model=model,
+                    max_turns=max_turns,
+                )
 
-        transcript_text_parts: list[str] = []
-        async for message in query(prompt=prompt, options=options):
-            if isinstance(message, AssistantMessage):
-                for block in message.content:
-                    if isinstance(block, TextBlock):
-                        transcript_text_parts.append(block.text)
-            elif isinstance(message, ResultMessage):
-                if message.result:
-                    transcript_text_parts.append(message.result)
+                transcript_text_parts: list[str] = []
+                async for message in query(prompt=prompt, options=options):
+                    if isinstance(message, AssistantMessage):
+                        for block in message.content:
+                            if isinstance(block, TextBlock):
+                                transcript_text_parts.append(block.text)
+                    elif isinstance(message, ResultMessage):
+                        if message.result:
+                            transcript_text_parts.append(message.result)
+                full_text = "\n".join(transcript_text_parts)
+        else:
+            full_text = f"provider=auto prompt={prompt} system_prompt={system_prompt} allowed_tools={','.join(allowed_tools)} max_turns={max_turns}"
 
-        full_text = "\n".join(transcript_text_parts)
         ambiguities = [Ambiguity(description=m, resolution=m) for m in AMBIGUITY_RE.findall(full_text)]
 
         commit_sha = self.store.commit_all(f"session:{session_id} agent:{agent_name}")

@@ -6,11 +6,13 @@ from pathlib import Path
 import pytest
 
 from aivcs.cli import _read_prompt
+from aivcs.providers import normalize_provider, resolve_provider
 from aivcs.store import Store
 from aivcs.index import SessionIndex
 from aivcs.spec import SpecStore
 from aivcs.models import SessionRecord, Ambiguity
 from aivcs.bisect import bisect_path
+from aivcs.vcs import create_vcs_backend, normalize_vcs
 
 
 @pytest.fixture
@@ -105,3 +107,18 @@ def test_bisect_returns_none_when_history_never_fails(repo):
     )
     result = bisect_path(root, "m.py", "python -m pytest test_m.py -q")
     assert result.first_bad_session is None
+
+
+def test_provider_aliases_and_cli_metadata_are_generic():
+    assert normalize_provider("claude-code") == "claude"
+    assert normalize_provider("gh-copilot") == "copilot"
+    assert resolve_provider("gh-copilot").cli == "copilot"
+    assert resolve_provider("gemini-cli").name == "gemini"
+
+
+def test_store_accepts_explicit_vcs_backend(tmp_path):
+    store = Store(tmp_path, vcs="git")
+    store.init()
+    assert store.vcs == "git"
+    assert create_vcs_backend(tmp_path, "git").plan.name == "git"
+    assert normalize_vcs("github") == "git"

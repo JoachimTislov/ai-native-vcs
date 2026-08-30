@@ -39,10 +39,10 @@ def _root() -> Path:
 def cmd_init(args):
     from .store import Store
 
-    store = Store(_root())
+    store = Store(_root(), vcs=args.vcs)
     store.init()
     (_root() / ".aivcs").mkdir(exist_ok=True)
-    print(f"initialized aivcs repo at {_root()}")
+    print(f"initialized aivcs repo at {_root()} using {store.vcs}")
 
 
 def cmd_spec_new(args):
@@ -111,10 +111,10 @@ def _read_prompt(args) -> str:
 def cmd_session_run(args):
     from .session import SessionRunner
 
-    runner = SessionRunner(_root())
+    runner = SessionRunner(_root(), provider=args.provider, vcs=args.vcs)
     prompt = _read_prompt(args)
     record = asyncio.run(
-        runner.run(agent_name=args.agent, prompt=prompt, spec_name=args.spec)
+        runner.run(agent_name=args.agent, prompt=prompt, spec_name=args.spec, provider=args.provider)
     )
     print(json.dumps(record.to_dict(), indent=2))
 
@@ -175,7 +175,9 @@ def main(argv=None):
     p = argparse.ArgumentParser(prog="aivcs")
     sub = p.add_subparsers(dest="cmd", required=True)
 
-    sub.add_parser("init").set_defaults(func=cmd_init)
+    init_parser = sub.add_parser("init")
+    init_parser.add_argument("--vcs", default=None, help="VCS backend to use (git, hg, svn, etc.)")
+    init_parser.set_defaults(func=cmd_init)
 
     sp = sub.add_parser("spec")
     spsub = sp.add_subparsers(dest="spec_cmd", required=True)
@@ -209,6 +211,8 @@ def main(argv=None):
     se1.add_argument("--agent", required=True)
     se1.add_argument("--prompt", default=None)
     se1.add_argument("--spec", default=None)
+    se1.add_argument("--provider", default=None, help="AI provider backend (claude, copilot, openai, gemini, ollama, auto)")
+    se1.add_argument("--vcs", default=None, help="VCS backend to use (git, hg, svn, etc.)")
     se1.set_defaults(func=cmd_session_run)
 
     lg = sub.add_parser("log")

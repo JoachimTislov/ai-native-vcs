@@ -7,6 +7,8 @@ Core objects (see Core Specifications):
   Session               -> aivcs.session.SessionRunner / SessionRecord
   Contract              -> aivcs.models.Contract
   Test suite            -> external; invoked by aivcs.bisect and the CLI's `check` command
+  VCS provider          -> aivcs.vcs.create_vcs_backend
+  AI provider           -> aivcs.providers.resolve_provider
 """
 
 __version__ = "0.1.0"
