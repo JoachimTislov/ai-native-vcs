@@ -1,8 +1,8 @@
 ---
 name: Spec drift or defect
 about: Record a mismatch between intended design and actual behavior.
-title: "Drift: "
-labels: [spec, defect, ai-vcs]
+title: ""
+labels: [spec, ai-vcs]
 ---
 
 ## Drift summary

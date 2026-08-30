@@ -33,9 +33,10 @@ See `docs/agent-roles.md` for the full role architecture and session metadata sc
 ## Spec and issue policy
 
 - `SPEC_LIST.md` is the repo's canonical tracker for satisfied vs planned work.
-- The parent issue captures the architectural boundary between Git as substrate and AI sessions as product semantics.
-- Future-facing issues are intentionally written as design-space questions rather than current instructions.
+- Parent and future design questions are tracked as issues, not as current implementation instructions.
+- GitHub issue titles should be written without `Future:` or `Parent:` prefixes; use labels instead.
 - New drift or defects discovered during implementation must be reflected in `SPEC_LIST.md` and linked to an issue when appropriate.
+- Issue labels should follow the project conventions: `architecture`, `design`, `ai-vcs`, `spec`, and `release` as needed.
 
 ## Validation standard
 

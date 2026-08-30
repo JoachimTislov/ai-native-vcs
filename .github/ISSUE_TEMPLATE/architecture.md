@@ -1,7 +1,7 @@
 ---
 name: Architecture decision
 about: Capture a future-facing design question or system boundary decision.
-title: "Future: "
+title: ""
 labels: [architecture, design, ai-vcs]
 ---
 
