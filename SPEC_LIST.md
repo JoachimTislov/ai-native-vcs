@@ -12,7 +12,7 @@ This document tracks the design and implementation status for the AI-native VCS 
 - [x] CLI scaffolding for init, specs, agents, sessions, logs, reviews, and bisecting.
 - [x] Agentic workflow conventions documented in `AGENTS.md`.
 - [x] CI and spec-progress automation added under `.github/workflows`.
-- [x] Specialized agent roles and session metadata model documented in `docs/agent-roles.md`.
+- [x] Specialized agent roles and session metadata model defined in `manifests/agent-manifest.yaml`.
 
 ## Planned / future work
 
