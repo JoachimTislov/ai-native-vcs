@@ -25,4 +25,26 @@ for bad_prefix in ('Future:', 'Parent:'):
         print(f'Found forbidden issue title prefix in AGENTS.md: {bad_prefix}')
         sys.exit(1)
 
-print('Issue policy check passed: label-based naming is declared and prefixes are not used.')
+required_policy = [
+    'status:planned',
+    'status:in-progress',
+    'status:done',
+    'area:core',
+    'area:spec',
+    'area:docs',
+    'area:workflow',
+    'area:release',
+    'priority:low',
+    'priority:medium',
+    'priority:high',
+    'type:feature',
+    'type:spec',
+    'type:research',
+    'type:task',
+]
+missing = [item for item in required_policy if item not in text.lower()]
+if missing:
+    print('AGENTS.md is missing part of the issue taxonomy: ' + ', '.join(missing))
+    sys.exit(1)
+
+print('Issue policy check passed: label-based naming and taxonomy are declared and prefixes are not used.')

@@ -37,8 +37,11 @@ See `.agents/agents/agent-manifest.yaml` for the full role architecture and sess
 - GitHub issue titles should be written without `Future:` or `Parent:` prefixes; use labels instead.
 - Standard GitHub issue forms are preferred over plain markdown issue bodies when structured reporting is useful.
 - All issues must be classified deterministically by automation: `ai` for AI-originated work and `human` for human-originated work.
+- Every issue must also carry a status label from `status:planned`, `status:in-progress`, or `status:done`, plus an area label from `area:core`, `area:spec`, `area:docs`, `area:workflow`, or `area:release`.
+- Priority labels (`priority:low`, `priority:medium`, `priority:high`) and type labels (`type:feature`, `type:spec`, `type:research`, `type:task`) are required for triage and sorting.
 - New drift or defects discovered during implementation must be reflected in `SPEC_LIST.md` and linked to an issue when appropriate.
-- Issue labels should use standard GitHub labels and the minimal origin labels as needed; avoid repo-specific labels that duplicate standard categories.
+- Issue labels should use standard GitHub labels and the repository taxonomy as needed; avoid repo-specific labels that duplicate standard categories.
+- Issue metadata must be updated by automation or scripts instead of ad hoc manual labeling so the repo remains easy to sort and review.
 
 ## Validation standard
 
@@ -67,3 +70,5 @@ See `.agents/agents/agent-manifest.yaml` for the full role architecture and sess
 - Follow a Linux-kernel style structure: summary, blank line, problem, impact, changes, validation, references.
 - Keep the summary focused on the change itself; do not encode the session history or implicit past reasoning in the message.
 - Store detailed provenance outside Git in the session metadata record.
+- Use `.agents/skills/commit.md` as the canonical local template for commit composition.
+- Always append the required trailer at the end of the commit message: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`.

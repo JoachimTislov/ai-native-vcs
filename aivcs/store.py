@@ -29,11 +29,18 @@ class Store:
     def __init__(self, root: Path):
         self.root = Path(root)
 
+    def _ensure_git_identity(self) -> None:
+        if self._run(["config", "user.name"], check=False).stdout.strip() == "":
+            self._run(["config", "user.name", "AIVCS Bot"])
+        if self._run(["config", "user.email"], check=False).stdout.strip() == "":
+            self._run(["config", "user.email", "aivcs@local.invalid"])
+
     # -- setup -----------------------------------------------------------
 
     def init(self) -> None:
         self.root.mkdir(parents=True, exist_ok=True)
         self._run(["init", "-q"])
+        self._ensure_git_identity()
         # An empty initial commit gives every domain a real parent to diff
         # against, so the very first session has a well-defined "before".
         if self._run(["log", "-1"], check=False).returncode != 0:
@@ -59,6 +66,7 @@ class Store:
 
     def commit_all(self, message: str) -> str:
         """Snapshot the entire working tree as one commit. Returns the commit sha."""
+        self._ensure_git_identity()
         self._run(["add", "-A"])
         # Allow empty commits: a session that concludes "no change needed" is
         # still a real session and should still get a session id / record.
