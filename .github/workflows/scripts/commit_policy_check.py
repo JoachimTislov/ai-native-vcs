@@ -27,6 +27,12 @@ if not commits:
     print("No commits to validate.")
     sys.exit(0)
 
+commits = [msg for msg in commits if msg and not re.match(r"^Merge\b", msg)]
+
+if not commits:
+    print("No non-merge commit subjects to validate.")
+    sys.exit(0)
+
 bad = [msg for msg in commits if not pattern.match(msg)]
 if bad:
     print("Commit messages do not match the required conventional format.")

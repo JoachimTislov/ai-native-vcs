@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="AI-VCS Broker is a session-first, AI-native software coordination framework that keeps workflow intent and production implementation aligned."
+    />
+    <title>AI-VCS Broker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <div class="brand">AI-VCS</div>
+        <nav>
+          <a href="#idea">Concept</a>
+          <a href="#architecture">Architecture</a>
+          <a href="#principles">Principles</a>
+          <a href="#quickstart">Quickstart</a>
+        </nav>
+        <a class="button secondary" href="https://github.com/JoachimTislov/ai-native-vcs">GitHub</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">AI-native software coordination</p>
+            <h1>Broker the workflow and the production system through one shared interface.</h1>
+            <p class="lede">
+              AI-VCS is a session-first framework for connecting AI-assisted engineering
+              work with the maintained implementation that must remain safe, testable,
+              and releasable in the real world.
+            </p>
+            <div class="actions">
+              <a class="button primary" href="#quickstart">See the model</a>
+              <a class="button secondary" href="https://github.com/JoachimTislov/ai-native-vcs/blob/master/README.md">Read the spec</a>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">The broker model</div>
+            <ul>
+              <li>Session history is the source of truth.</li>
+              <li>Spec and intent remain explicit and reviewable.</li>
+              <li>Git stays as the runtime/storage substrate.</li>
+              <li>AI acts as a collaborator, not a hidden replacement.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics">
+        <div class="container metric-grid">
+          <div class="metric">
+            <strong>Workflow</strong>
+            <span>Sessions, specs, and review artifacts</span>
+          </div>
+          <div class="metric">
+            <strong>Review</strong>
+            <span>Deterministic validation and drift checks</span>
+          </div>
+          <div class="metric">
+            <strong>Runtime</strong>
+            <span>Production implementation kept real and deployable</span>
+          </div>
+          <div class="metric">
+            <strong>Broker</strong>
+            <span>One generic interface over both maintained processes</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="idea" class="section">
+        <div class="container narrow">
+          <p class="section-label">Core idea</p>
+          <h2>Making the real work visible instead of exposing raw internals.</h2>
+          <p>
+            Modern engineering teams do not deal with just “one repository.” They deal
+            with two maintained processes that must stay aligned:
+          </p>
+          <div class="two-column">
+            <div>
+              <h3>Workflow layer</h3>
+              <p>
+                The evolving design process: specs, context, intent, agent work, review,
+                and session history.
+              </p>
+            </div>
+            <div>
+              <h3>Production layer</h3>
+              <p>
+                The real implementation that must remain operational, testable, and
+                releasable in the real world.
+              </p>
+            </div>
+          </div>
+          <p>
+            The broker creates a stable abstraction between them. It exposes intent,
+            validation, and traceability without forcing users to reason in terms of
+            Git plumbing or ad hoc operational mechanics.
+          </p>
+        </div>
+      </section>
+
+      <section id="architecture" class="section alt">
+        <div class="container">
+          <p class="section-label">Architecture</p>
+          <h2>Four layers of a coherent AI-native workflow</h2>
+          <div class="card-grid">
+            <article class="card">
+              <span class="index">01</span>
+              <h3>Workflow layer</h3>
+              <p>Sessions, specs, task execution, intent tracking, and actor context.</p>
+            </article>
+            <article class="card">
+              <span class="index">02</span>
+              <h3>Review layer</h3>
+              <p>Validation, ambiguity handling, regression detection, and evidence-based feedback.</p>
+            </article>
+            <article class="card">
+              <span class="index">03</span>
+              <h3>Broker layer</h3>
+              <p>The generic double interface that mediates between the active workflow and the maintained implementation.</p>
+            </article>
+            <article class="card">
+              <span class="index">04</span>
+              <h3>Runtime layer</h3>
+              <p>The concrete system that builds, tests, and ships software in production.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="principles" class="section">
+        <div class="container narrow">
+          <p class="section-label">Design principles</p>
+          <h2>AI is a collaborator in a structured process, not a hidden replacement for it.</h2>
+          <ul class="principles">
+            <li>Specs and tasks stay explicit rather than buried in prompts.</li>
+            <li>Validation remains deterministic, reviewable, and test-driven.</li>
+            <li>Session history is the durable record of intent and evolution.</li>
+            <li>Git remains a storage and transport substrate, not the user-facing model.</li>
+            <li>The project stays provider-neutral so the workflow remains portable.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="quickstart" class="section alt">
+        <div class="container narrow">
+          <p class="section-label">Quickstart</p>
+          <h2>Use the system at the workflow level, not at the raw Git level.</h2>
+          <pre><code>pip install -e .
+mkdir -p demo &amp;&amp; cd demo
+aivcs init
+# define a spec, bind an agent, and run a session
+# inspect history and review output without exposing git internals</code></pre>
+          <p>
+            The project intentionally presents a bounded interface such as <code>session start</code>,
+            <code>review</code>, and <code>history view</code> instead of “raw git” mechanics.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-row">
+        <span>AI-VCS Broker</span>
+        <a href="https://github.com/JoachimTislov/ai-native-vcs">View repository</a>
+      </div>
+    </footer>
+  </body>
+</html>
