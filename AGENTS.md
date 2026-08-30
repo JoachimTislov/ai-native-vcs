@@ -28,7 +28,7 @@ The repository follows a session-centric development model rather than a raw pat
 - History is tracked through sessions, not only through Git diff or blame.
 - Diagnosis begins with the original intent, then moves to the failing implementation.
 
-See `manifests/agent-manifest.yaml` for the full role architecture and session metadata schema.
+See `.agents/agents/agent-manifest.yaml` for the full role architecture and session metadata schema.
 
 ## Spec and issue policy
 
@@ -36,11 +36,34 @@ See `manifests/agent-manifest.yaml` for the full role architecture and session m
 - Parent and future design questions are tracked as issues, not as current implementation instructions.
 - GitHub issue titles should be written without `Future:` or `Parent:` prefixes; use labels instead.
 - Standard GitHub issue forms are preferred over plain markdown issue bodies when structured reporting is useful.
+- All issues must be classified deterministically by automation: `ai-generated` for AI-originated work and `human-generated` for human-originated work.
 - New drift or defects discovered during implementation must be reflected in `SPEC_LIST.md` and linked to an issue when appropriate.
-- Issue labels should follow the project conventions: `architecture`, `design`, `ai-vcs`, `spec`, and `release` as needed.
+- Issue labels should follow the project conventions: `architecture`, `design`, `ai-vcs`, `spec`, `release`, `ai-generated`, and `human-generated` as needed.
 
 ## Validation standard
 
 - Python source must be validated with the repo's existing tests.
 - New automation should be compatible with GitHub Actions and the local environment.
 - No undocumented shortcuts: if a workaround is required, it should be captured in the spec or issue backlog.
+
+## Deterministic enforcement policy
+
+- All repo enforcement must be deterministic and explicit: code, scripts, and GitHub rules should be the source of truth, not aspirational text or soft guidance.
+- Branch naming, commit-message rules, linear-history requirements, and merge policy must be encoded in automation or repository settings rather than left to convention alone.
+- The project must prefer machine-enforced constraints over human memory or loosely phrased instructions.
+- CI and repository settings must agree on the same policy so that enforcement is consistent and reviewable.
+
+## Sync and session policy
+
+- A session may produce one or more child commits, but the authoritative session metadata must live outside Git and reference those child commits.
+- Git commits should stay concise and declarative; the session record stores provider, model, duration, tool usage, MCP metadata, validation results, and spec references.
+- The session history is the source of truth for debugging and review, not the commit narrative alone.
+- The repo must not require the reader to reconstruct implicit context from commit messages; the session metadata must make the relationship explicit.
+- A session should be independently reviewable even when multiple child commits are associated with it.
+
+## Commit message standard
+
+- Use a short summary line, imperative mood, and a maximum of 74 characters.
+- Follow a Linux-kernel style structure: summary, blank line, problem, impact, changes, validation, references.
+- Keep the summary focused on the change itself; do not encode the session history or implicit past reasoning in the message.
+- Store detailed provenance outside Git in the session metadata record.
