@@ -1,3 +1,8 @@
+---
+name: issue-drift
+description: Detect mismatches between repository policy, spec status, and GitHub issue metadata. Use when issue labels or tracker state drift from the required taxonomy or when repo status needs validation.
+---
+
 # Issue drift detection
 
 Use this skill when issue metadata, repository status, or spec records are out of sync.

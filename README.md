@@ -22,7 +22,7 @@ real engineering project rather than a one-off prototype.
 - GitHub issue and spec policy: implemented
 - CI and release automation: implemented
 - Python prototype retained for orchestration and experimentation
-- Repository metadata and agent assets live under `.agents/`
+- Repository metadata and agent assets live under `.agents/`; GitHub-discoverable custom agents are mirrored under `.github/agents/` for Copilot discovery.
 - Canonical repo instructions are defined in `AGENTS.md` and surfaced via `.github/copilot-instructions.md`
 
 ## What's implemented
@@ -58,9 +58,11 @@ real engineering project rather than a one-off prototype.
 This repository follows an agentic workflow aligned with `AGENTS.md` and the repo-local agent metadata under `.agents/`:
 
 - `SPEC_LIST.md` remains the canonical tracker for satisfied vs. planned work.
-- `AGENTS.md` is the single source of truth for repo policy and enforcement.
-- `.agents/agents/*.yaml` stores the machine-readable role catalog and repo metadata.
-- `.agents/skills/*.md` provides repo-local reusable skill handoff guidance.
+- `AGENTS.md` is the high-level repo policy layer; the detailed workflow instructions live in `.agents/skills/*/SKILL.md`.
+- `.agents/agents/*.agent.md` stores Copilot custom-agent profiles with YAML frontmatter; this is separate from the OpenSkills skill package format.
+- Workflow scripts live next to the workflow that invokes them under `.github/workflows/scripts/`.
+- If a script is only used by one skill or one agent, keep it next to that `SKILL.md` or custom-agent profile instead of in the shared workflow script directory.
+- `.agents/skills/<skill>/SKILL.md` provides repo-local reusable skill guidance in the OpenSkills format.
 - design questions are tracked through issues and labels, not as hidden local decisions.
 - bugs, drift, and bad design decisions flow back into the spec and issue tracker so the system can self-correct.
 - GitHub Actions enforces the minimal automation required to keep the repo coherent: tests and spec-progress validation run on push/PR.
@@ -82,7 +84,7 @@ with each one responsible for a distinct part of the workflow.
 - `Abstraction Evaluator` — reviews whether the architecture still matches the
   project's goals and design principles.
 
-The role definitions are stored in `.agents/agents/agent-manifest.yaml`, and the repo-local skill deck lives under `.agents/skills/`.
+The role definitions are stored in the `.agents/agents/*.agent.md` custom-agent profiles; the repo-local OpenSkills skill deck lives under `.agents/skills/`.
 
 ## Abstracted Git API
 
@@ -107,7 +109,7 @@ session/spec workflow instead of raw version control commands.
 
 The `Abstraction Evaluator` is the design-focused specialist that checks the
 boundary between Git as substrate and the AI-native session/spec model as the
-user-facing system. The role is defined in `.agents/agents/agent-manifest.yaml`.
+user-facing system. The role is defined in `.agents/agents/abstraction-evaluator.agent.md`.
 
 ## Provider-agnostic execution model
 
@@ -120,7 +122,7 @@ core system treats resume as an optimization rather than a source of truth.
 The session remains the canonical object regardless of which provider produced
 it.
 
-The provider-neutral execution model is captured in `.agents/agents/provider-agnostic-flow.yaml`.
+The provider-neutral execution model is captured in `.agents/agents/provider-agnostic-flow.agent.md`.
 
 ## Python suitability at scale
 
@@ -132,7 +134,7 @@ safety, and throughput. The recommendation is to keep Python at the AI and
 workflow layer while moving the hot-path storage/indexing engine to a lower-
 level runtime when scale demands it.
 
-The language tradeoff is captured in `.agents/agents/python-at-scale.yaml`.
+The language tradeoff is captured in `.agents/agents/python-at-scale.agent.md`.
 
 ## Release flow and semantic versioning
 
@@ -146,7 +148,7 @@ The release workflow is intentionally conservative:
 - the GitHub release includes generated binaries for the supported platforms
 
 The release automation is in `.github/workflows/release.yml` and
-`scripts/release.sh`.
+`.github/workflows/scripts/release.sh`.
 
 This repo is also distributed under the MIT License; see `LICENSE`.
 

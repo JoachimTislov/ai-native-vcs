@@ -1,3 +1,8 @@
+---
+name: commit
+description: Write repository commits that match this project's session-first, Linux-kernel-inspired standards. Use when creating a commit message that must be concise, concrete, and include the required Copilot trailer.
+---
+
 # Commit skill
 
 Use this skill when writing a repository commit that should match the project’s session-first and Linux-kernel-inspired standards.

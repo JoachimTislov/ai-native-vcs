@@ -1,3 +1,8 @@
+---
+name: handoff
+description: Capture minimal session handoff notes for continuation outside the ai-vcs interface. Use when a task must resume for another agent or human without exposing secrets or guessing state.
+---
+
 # Handoff skill
 
 Use this only when a session must continue outside the ai-vcs interface. The goal is to capture the minimal, non-secret state needed for another agent or human to resume without guessing.

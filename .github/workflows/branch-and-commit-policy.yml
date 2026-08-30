@@ -14,10 +14,10 @@ jobs:
           fetch-depth: 0
 
       - name: Validate branch naming
-        run: python scripts/branch_policy_check.py
+        run: python .github/workflows/scripts/branch_policy_check.py
 
       - name: Validate commit message format
-        run: python scripts/commit_policy_check.py
+        run: python .github/workflows/scripts/commit_policy_check.py
 
       - name: Validate PR issue linkage
-        run: python scripts/pr_issue_link_check.py
+        run: python .github/workflows/scripts/pr_issue_link_check.py

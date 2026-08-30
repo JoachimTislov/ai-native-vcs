@@ -15,4 +15,4 @@ jobs:
         with:
           python-version: '3.11'
       - name: Validate spec tracker
-        run: python scripts/check_spec_progress.py
+        run: python .github/workflows/scripts/check_spec_progress.py
