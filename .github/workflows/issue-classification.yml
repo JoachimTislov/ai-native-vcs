@@ -4,6 +4,10 @@ on:
   issues:
     types: [opened, edited, reopened]
 
+concurrency:
+  group: ${{ github.workflow }}-issue-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
 jobs:
   classify:
     runs-on: ubuntu-latest
